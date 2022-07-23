@@ -1,6 +1,5 @@
 asttokens==2.0.5
 backcall==0.2.0
-certifi @ file:///opt/conda/conda-bld/certifi_1655968806487/work/certifi
 charset-normalizer==2.1.0
 debugpy==1.6.2
 decorator==5.1.1
