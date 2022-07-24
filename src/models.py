@@ -85,3 +85,50 @@ class BertEmbeddings(nn.Module):
 
         return embeddings
 
+
+class BertLayer(nn.Module):
+    """ Transformer
+    """
+
+    def __init__(self, config) -> None:
+        super(BertLayer).__init__()
+
+        # self-attention
+        self.attention = BertAttention(config)
+
+        # FC layer that process the self-attention output
+        self.intermediate = BertIntermediate(config)
+
+        # Last layer that sum up features from self-attention and input for BertLayer
+        self.output = BertOutput(config)
+
+    def forward(self, hidden_states, attention_mask, attention_show_fig=False):
+        """
+        Args: 
+            hidden_states: 
+            attentipon_mask: 
+            attention_show_fig: 
+
+        Returns: 
+            layer_output:
+            attention_probs: 
+        """
+        if attention_show_fig:
+            """"""
+            attention_output, attention_probs = self.attention(
+                hidden_states, attention_mask, attention_show_fig
+            )
+            intermediate_output = self.intermediate(attention_output)
+            layer_output = self.output(intermediate_output, attention_output)
+
+            return layer_output, attention_probs
+        
+        elif attention_show_fig == False:
+            attention_output = self.attention(
+                hidden_states, attention_mask, attention_show_fig
+            )
+            intermediate_output = self.intermediate(attention_output)
+            layer_output = self.output(intermediate_output, attention_output)
+
+            return layer_output  # [batch_size, seq_length, hidden_size]
+            
