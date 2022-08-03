@@ -133,30 +133,30 @@ class BertLayer(nn.Module):
             return layer_output  # [batch_size, seq_length, hidden_size]
             
 
-    class BertAttention(nn.Module):
-        """ Self-Attention part in BertLayer module.
+class BertAttention(nn.Module):
+    """ Self-Attention part in BertLayer module.
+    """
+
+    def __init__(self, config) -> None:
+        super(BertAttention).__init__()
+        self.selfattn = BertSelfAttention(config)
+        self.output = BertSelfOutput(config)
+
+    def forward(self, input_tensor, attention_mask, attention_show_flg=False):
         """
 
-        def __init__(self, config) -> None:
-            super(BertAttention).__init__()
-            self.selfattn = BertSelfAttention(config)
-            self.output = BertSelfOutput(config)
+        Args: 
+            input_tensor: 
+            attention_mask: 
+            attention_show_flg:
+        """
+        if attention_show_flg:
+            # This returns attention_probs as well.
+            self_output, attention_probs = self.selfattn(input_tensor, attention_mask, attention_show_flg)
+            attention_output = self.output(self_output, input_tensor)
+            return attention_output, attention_probs
 
-        def forward(self, input_tensor, attention_mask, attention_show_flg=False):
-            """
-
-            Args: 
-                input_tensor: 
-                attention_mask: 
-                attention_show_flg:
-            """
-            if attention_show_flg:
-                # This returns attention_probs as well.
-                self_output, attention_probs = self.selfattn(input_tensor, attention_mask, attention_show_flg)
-                attention_output = self.output(self_output, input_tensor)
-                return attention_output, attention_probs
-
-            elif attention_show_flg == False:
-                self_output = self.selfattn(input_tensor, attention_mask, attention_show_flg)
-                attention_output = self.output(self_output, input_tensor)
-                return attention_output
+        elif attention_show_flg == False:
+            self_output = self.selfattn(input_tensor, attention_mask, attention_show_flg)
+            attention_output = self.output(self_output, input_tensor)
+            return attention_output
